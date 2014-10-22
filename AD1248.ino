@@ -48,7 +48,7 @@ void loop()
 	digitalWrite(CS, LOW);
 	delayMicroseconds(1);
 	SPI.transfer(0x40); // send 1st command byte, address of the register
-	SPI.transfer(0x01);			// send 2nd command byte, read only one register 
+	SPI.transfer(0x01);			// send 2nd command byte, read two registers 
 	Serial.println(SPI.transfer(0xFF));	// read data of the register 
 	Serial.println(SPI.transfer(0xFF));
 	digitalWrite(CS, HIGH);
