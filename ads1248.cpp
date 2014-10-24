@@ -14,9 +14,8 @@ void ads1248::begin(const int CS, const int START, const int DRDY){
 	pinMode(START, OUTPUT);		  //set START pin as Output
 	//digitalWrite(START, LOW);		// Start Convert Continuously
 	pinMode(DRDY, INPUT);
-	//SPI.setClockDivider(SPI_CLOCK_DIV4); // Bus Speed
-	//SPI.setDataMode(0x04); //SPI_MODE1
-	SPI.begin(); // initialize SPI:
+
+	SPI.begin(SPISettings()); // initialize SPI with 4Mhz clock, MSB first, SPI Mode0
 	_CS = CS;
 
 	}
