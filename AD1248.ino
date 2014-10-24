@@ -38,6 +38,21 @@ void setup()
 
 void loop()
 {
+
+
+
+
+
+
+	delay(500);
+
+
+}
+
+
+void test(){
+		
+	SPI.beginTransaction(SPISettings());
 	digitalWrite(CS, LOW);
 	delayMicroseconds(1);
 	SPI.transfer(0x40); // send 1st command byte, address of the register
@@ -52,20 +67,9 @@ void loop()
 	Serial.println(SPI.transfer(0xFF));	// read data of the register 
 	Serial.println(SPI.transfer(0xFF));
 	digitalWrite(CS, HIGH);
-
-
-
-
-
-	delay(500);
-
+	SPI.endTransaction();
 
 }
-
-
-
-
-
 
 
 
