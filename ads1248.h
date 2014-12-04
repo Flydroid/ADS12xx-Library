@@ -203,10 +203,7 @@ public:
 		const int START,
 		const int DRDY
 		);
-	ads1248(
-		const int CS,
-		const int START
-		);
+	
 	
 
 	void Reset(
@@ -231,74 +228,16 @@ public:
 		uint8_t IDAC1_val;
 
 	} TE, PT100,Voltage;
-	unsigned long readPT100(
+	unsigned long readSingle(
 		regValues_t regValues
 		);
 
-	unsigned long* readTE(
-		regValues_t TE_regValues, regValues_t PT100_regValues
-		);
 
-	unsigned long readVoltage(
-		regValues_t Voltage_regValues
-		);
-	void WaitRdy(
-		);
-
-	void SetMode(
-		);
-
-	void SetChannel(
-		uint8_t channel
-		);
-
-	void ReadChannel(
-		uint8_t channel
-		);
 	
-	void Calibrate(
-		);
-
 	unsigned long  GetConversion(
 		);
 
-	unsigned long  ContinuousReadAvg(
-		uint8_t samples
-		);
-
-	unsigned long  ContinuousRead(
-		);
-
-	void Config(
-		uint8_t clock,
-		uint8_t rate,
-		uint8_t gain,
-		uint8_t bias,
-		uint8_t reference,
-		uint8_t iexcdir,
-		uint8_t iexcen
-		);
-
-
-	/*
-	unsigned long readADConce();
-	unsigned long readADC();
-	void selectChannel(
-	int CH_NUM			// channel to switch to
-	);
-
-	unsigned long readRegister(uint8_t regadd);
-	void writeRegister(uint8_t regadd, uint8_t regbyte);
-	void reset();
-	uint8_t CH_BUF[7] = { 0x07, 0x0F, 0x17, 0x1F, 0x27, 0x2F, 0x37 }; // Example with 7 channels which measure to GND.
-	//uint8_t DIFF[4] = { 0x01, 0x13, 0x25, 0x37 };		// 1 to 3 for Differntial measurement, 4 for PT100 for cold junction reference
-	//uint8_t TGND[7] = { 0x07, 0x0F, 0x17, 0x1F, 0x27, 0x2F, 0x37 }; //channel 1 to 7 for measure to ground, 8 is  tied to GND via Transistor controllable with digital IO
-	*/
-private:
-	int _CS;
-
-
-};
+	
 
 
 #endif

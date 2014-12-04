@@ -6,7 +6,7 @@ const int  CS = 10;
 const int  DRDY = 15;
 
 
-ads1248 ADS(CS,START);  //initialize ADS as object of the ads1248 class
+ads1248 ADS(CS,START, DRDY);  //initialize ADS as object of the ads1248 class
 
 
 
