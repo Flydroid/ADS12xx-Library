@@ -203,8 +203,8 @@ public:
 		const int START,
 		const int DRDY
 		);
-	
-	
+
+
 
 	void Reset(
 		);
@@ -217,7 +217,7 @@ public:
 		uint8_t regAdress,
 		uint8_t regValue
 		);
-	
+
 	struct regValues_t
 	{
 		uint8_t MUX0_val;
@@ -227,17 +227,18 @@ public:
 		uint8_t IDAC0_val;
 		uint8_t IDAC1_val;
 
-	} TE, PT100,Voltage;
+	} TE, PT100, Voltage;
 	unsigned long readSingle(
 		regValues_t regValues
 		);
 
 
-	
+
 	unsigned long  GetConversion(
 		);
+private: 
+	int _CS;
 
-	
 
-
+};
 #endif
