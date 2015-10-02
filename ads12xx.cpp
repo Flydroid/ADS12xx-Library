@@ -3,16 +3,11 @@
 volatile int DRDY_state = HIGH;
 
 void waitforDRDY() {
-	while (!DRDY_state) continue;
+	while (DRDY_state) continue;
 }
 
 void DRDY_Interuppt() {
-	if (DRDY_state = LOW) {
-		DRDY_state = HIGH;
-	}
-	else {
-		DRDY_state = LOW;
-	}
+	DRDY_state = LOW;
 }
 
 ads12xx::ads12xx(const int CS, const int START, const int DRDY) {
@@ -29,7 +24,7 @@ ads12xx::ads12xx(const int CS, const int START, const int DRDY) {
 	delay(500);
 	SPI.begin();
 
-	//attachInterrupt(_DRDY, DRDY_Interuppt, CHANGE);
+	attachInterrupt(_DRDY, DRDY_Interuppt, FALLING);
 
 	delay(500);
 
@@ -48,21 +43,24 @@ long ads12xx::GetConversion() {
 	//SPI.transfer(SELFOCAL);
 	delay(10);
 	int32_t regData;
-	//	while (!DRDY_state){
+	waitforDRDY();
 	SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE1));
 	digitalWrite(_CS, LOW); //Pull SS Low to Enable Communications with ADS1247
 	delayMicroseconds(10); // RD: Wait 25ns for ADC12xx to get ready
 	SPI.transfer(RDATA); //Issue RDATA
 	regData |= SPI.transfer(NOP);
 	regData <<= 8;
+
 	regData |= SPI.transfer(NOP);
 	regData <<= 8;
 	regData |= SPI.transfer(NOP);
 	delayMicroseconds(10);
 	digitalWrite(_CS, HIGH);
 	SPI.endTransaction();
-	//}
-	//detachInterrupt(_DRDY);
+	noInterrupts();
+	DRDY_state = HIGH;
+	interrupts();
+
 	return regData;
 }
 

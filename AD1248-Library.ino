@@ -17,7 +17,7 @@ void setup()
 		Serial.println("Serial online");
 	}
 
-	ADS.Reset(RESET_PIN);			
+	ADS.Reset(RESET_PIN);
 	delay(10);
 #ifdef ADS1248
 
@@ -29,7 +29,7 @@ void setup()
 	Voltage.VBIAS_val = VBIAS_OFF;
 	ADS.SetRegister(Voltage);
 #endif
-	
+
 	//	ADS.calibration(SYSGCAL);
 	//ADS.calibration(SELFOCAL);
 
@@ -38,23 +38,25 @@ void setup()
 
 	//Voltage.MUX_val = P_AIN0 | N_AINCOM;
 	//Voltage.DRATE_val = DR_1000;
-	
-	
+
+
 
 	Serial.println("Commands for testing:");
 	Serial.println("'r' to read Register");
 	Serial.println("'w' to write Register");
 	Serial.println("'c' to get a Conversion Result");
-	Serial.println("'d' to SDATAC");
+	Serial.println("'x' to SDATAC, 'd' for SDATA");
 	Serial.println("'o' to write Pre Predefinde Registers");
+	Serial.println("'f' to write a command");
 }
 
 void loop() {
 #ifdef ADS1256
 	if (Serial.available()) {
 		char cin = Serial.read();
+		char  check = 'y';
 		uint8_t cin1;
-		switch (cin){
+		switch (cin) {
 			case 'r':
 				Serial.println("Which Register to read?");
 				while (!Serial.available());
@@ -86,16 +88,28 @@ void loop() {
 				break;
 			case 'd':
 				SPI.transfer(RDATAC);
+				while (check == 'y') {
+					if (Serial.available()){
+					check = Serial.read();
+				}
+				uint32_t data = ADS.GetConversion();
+				Serial.println(data);
+				}
 				break;
-
-			
+			case 'f':
+				Serial.println("Which command to write");
+				while (!Serial.available());
+				SPI.transfer(Serial.read());
+				break;
+				
 			default:
 				break;
-			}
+		}
 	}
-	//ADS.SetRegisterValue(MUX, P_AIN0 | N_AINCOM);
-	//Serial.println(ADS.GetRegisterValue(MUX),HEX);
-	//Serial.println(ADS.GetConversion());
+}
+//ADS.SetRegisterValue(MUX, P_AIN0 | N_AINCOM);
+//Serial.println(ADS.GetRegisterValue(MUX),HEX);
+//Serial.println(ADS.GetConversion());
 #endif
 	//test_intTemp();
 	//test_supVoltage();
@@ -106,8 +120,7 @@ void loop() {
 	//ADS.Reset();
 	//Serial.println(ADS.GetRegisterValue(MUX), HEX);
 
-	delay(10);
-}
+
 
 #ifdef ADS1248
 
