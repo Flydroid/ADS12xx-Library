@@ -4,11 +4,10 @@
 //#define ADS1248
 //define ADS1256
 
-/*Function */
-
+/*Serial Template */
 
 #ifdef ADS1248
-#include "ads1248.h"
+//#include "ads1248.h"
 #endif // ADS1248
 
 #ifdef ADS1256
@@ -16,7 +15,7 @@
 #endif // ADS1256
 
 #include "SPI.h"
-class ads12xx{
+class ads12xx {
 public:
 	ads12xx(
 		const int CS,
@@ -24,9 +23,8 @@ public:
 		const int DRDY
 		);
 
-
-
 	void Reset(
+		const int RESET_PIN
 		);
 
 	unsigned long  GetRegisterValue(
@@ -49,23 +47,17 @@ public:
 		uint8_t IDAC1_val;
 #endif // ADS1248
 #ifdef ADS1256
-		uint8_t STATUS_val;
-		uint8_t MUX_val;
-		uint8_t ADCON_val;
-		uint8_t DRATE_val;
-		uint8_t IO_val;
+		uint8_t STATUS_val = STATUS_RESET;
+		uint8_t MUX_val = MUX_RESET;
+		uint8_t ADCON_val = ADCON_RESET;
+		uint8_t DRATE_val = DRATE_RESET;
+		uint8_t IO_val = IO_RESET;
 #endif // ADS1256
-
-
-		
-
 	};
 
 	long readSingle(
 		regValues_t regValues
 		);
-
-
 
 	long  GetConversion(
 		);
@@ -80,7 +72,6 @@ private:
 	int _CS;
 	int _DRDY;
 	int _START;
-
-
+	volatile int DRDY_state;
 };
 #endif

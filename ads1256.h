@@ -3,11 +3,10 @@
 
 /* For information to the register and settings see manual page (p..) */
 
-
 /* ADS1248 Register (see p42 for Register Map) */
 
 #define		STATUS    0x00 //Status Control Register 0
-#define		MUX 	  0X01 //Multiplexer Control Register 0 
+#define		MUX 	  0x01 //Multiplexer Control Register 0
 #define		ADCON     0x02 //A/D Control Register 0
 #define		DRATE	  0x03 //A/D Data Rate Control Register 0
 #define		IO	      0X04 //GPIO Control Register 0
@@ -17,8 +16,6 @@
 #define		FSC0 	  0x08 //Full scale Callibration Coefficient Register 0
 #define		FSC1	  0x09 //Full scale Callibration Coefficient Register 1
 #define		FSC2	  0x0A //Full scale Callibration Coefficient REgister 2
-
-
 
 /*STATUS - Status Control Register 0 ( see p30)*/
 /* BIT7 - BIT6 -  BIT5   -  BIT4   -  BIT3   -  BIT2   -  BIT1   -  BIT0 */
@@ -31,8 +28,8 @@
 /*Input data is always shifted in most significant byte and bit first. Output data is always shifted out most significant
 byte first. The ORDER bit only controls the bit order of the output data within the byte.*/
 /*ACAL1:0 Auto Calibration*/
-#define ACAL_OFF B000000000 // Auto Calibration Disabled (default)
-#define ACAL_ON  B000000100 // Auto Calibration Enabled
+#define ACAL_OFF B00000000 // Auto Calibration Disabled (default)
+#define ACAL_ON  B00000100 // Auto Calibration Enabled
 /*When Auto-Calibration is enabled, self-calibration begins at the completion of the WREG command that changes
 the PGA (bits 0-2 of ADCON register), DR (bits 7-0 in the DRATE register) or BUFEN (bit 1 in the STATUS register)
 values.*/
@@ -41,15 +38,12 @@ values.*/
 #define BUFEN_ON  B00000010 //BUffer Enabled
 /*DRDY1:0 Data Ready (Read Only) Duplicates the state of the DRDY pin*/
 
-
-
-
 /* MUX - Multiplexer Control Register 0 (see p31 - bring together with bitwise OR | */
 /* BIT7  - BIT6  -  BIT5   -  BIT4   -  BIT3   -  BIT2   -  BIT1   -  BIT0 */
 /* PSEL3 - PSEL2 -  PSEL1  -  PSEL0  -  NSEL3  -  NSEL2   - NSEL1   - NSEL0 */
-#define MUX_RESET 0x01      // Reset MUX0 Register 
+#define MUX_RESET 0x01      // Reset MUX0 Register
 /* PSEL3:0 Positive input channel selection bits */
-#define P_AIN0 B00000000
+#define P_AIN0 B00000000 //(default)
 #define P_AIN1 B00010000
 #define P_AIN2 B00100000
 #define P_AIN3 B00110000
@@ -60,7 +54,7 @@ values.*/
 #define P_AINCOM B10000000
 /* NSEL3:0 Negativ input channel selection bits */
 #define N_AIN0 B00000000
-#define N_AIN1 B00000001
+#define N_AIN1 B00000001 //(default)
 #define N_AIN2 B00000010
 #define N_AIN3 B00000011
 #define N_AIN4 B00000100
@@ -74,7 +68,7 @@ values.*/
 /* 0    - CLK1   -  CLK0   -  SDCS1  -  SDCS0  -  PGA2   -  PGA1   -  PAG0 */
 #define ADCON_RESET 0x20 // Reset ADCON Register
 /*CLK2:0 D0/CLKOUT Clock Out Rate Setting*/
-#define CLK_OFF B00000000 //Clock Out off 
+#define CLK_OFF B00000000 //Clock Out off
 #define CLK_1   B00100000 //Clock Out Frequency = fCLKIN (default)
 #define CLK_2   B01000000 //Clock Out Frequency = fCLKIN/2
 #define CLK_4   B01100000 //Clock Out Frequency = fCLKIN/4
@@ -117,7 +111,6 @@ ADS1255/6. A shorted sensor produces a very small signal while an open-circuit s
 #define DR_5     B00010011 //5 SPS
 #define DR2_5    B00000011 //2,5 SPS
 
-
 /*IO - GPIO Control Register 0 ( see p32)*/
 /* BIT7 - BIT6   -  BIT5   -  BIT4   -  BIT3   -  BIT2   -  BIT1   -  BIT0 */
 /* DIR3 - DIR2   -  DIR1   -  DIR0   -  DIO3   -  DIO2   -  DIO1   -  DIO0 */
@@ -136,15 +129,13 @@ ADS1255/6. A shorted sensor produces a very small signal while an open-circuit s
 #define DIR0_IN   B00010000 //D0/CLKOUT is an input (default)
 /*DIO3:0 Status of Digital I/O, Read Only*/
 
-
-
 /* SPI COMMAND DEFINITIONS (p34) */
 /*SYSTEM CONTROL */
 #define		WAKEUP		0x00 	//Exit Sleep Mode
 #define 	STANDBY		0xFD	//Enter Sleep Mode
-#define 	SYNC 		0xFC //Synchornize the A/D Conversion
+#define 	SYNC 		0xFC    //Synchornize the A/D Conversion
 #define 	RESET		0xFE	//Reset To Power UP values
-#define 	NOP			0xFF	//NO Operation
+#define		NOP			0xFF	//No operation
 /*DATA READ*/
 #define		RDATA		0x01	//Read data once
 #define 	RDATAC		0x03	//Read data continously
@@ -155,17 +146,9 @@ ADS1255/6. A shorted sensor produces a very small signal while an open-circuit s
 /*Calibration */
 #define 	SYSOCAL		0xF3	//System Offset Calibration
 #define 	SYSGCAL		0xF2	//System Gain Calibration
-#define 	SELFOCAL	0xF0	//Self Offset Calibration	
+#define 	SELFOCAL	0xF0	//Self Offset Calibration
 
-
-
-
-
-
-
-
-
-
+#define SPI_SPEED 1700000
+#define DRDY_PIN 8
 
 #endif
-
