@@ -146,7 +146,7 @@ ADS1255/6. A shorted sensor produces a very small signal while an open-circuit s
 /*Calibration */
 #define 	SYSOCAL		0xF3	//System Offset Calibration
 #define 	SYSGCAL		0xF2	//System Gain Calibration
-#define 	SELFOCAL	0xF0	//Self Offset Calibration
+#define 	SELFCAL	    0xF0	//Self Offset Calibration
 
 #define SPI_SPEED 1700000
 #define DRDY_PIN 8

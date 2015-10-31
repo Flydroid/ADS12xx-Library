@@ -2,7 +2,7 @@
 #define ads12xx_H
 
 //#define ADS1248
-//define ADS1256
+//#define ADS1256
 
 /*Serial Template */
 
@@ -29,6 +29,10 @@ public:
 
 	unsigned long  GetRegisterValue(
 		uint8_t regAdress
+		);
+	
+	void SendCMD(
+		uint8_t cmd
 		);
 
 	void SetRegisterValue(

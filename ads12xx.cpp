@@ -48,10 +48,12 @@ long ads12xx::GetConversion() {
 	digitalWrite(_CS, LOW); //Pull SS Low to Enable Communications with ADS1247
 	delayMicroseconds(10); // RD: Wait 25ns for ADC12xx to get ready
 	SPI.transfer(RDATA); //Issue RDATA
+	delayMicroseconds(10);
 	regData |= SPI.transfer(NOP);
+	//delayMicroseconds(10);
 	regData <<= 8;
-
 	regData |= SPI.transfer(NOP);
+	//delayMicroseconds(10);
 	regData <<= 8;
 	regData |= SPI.transfer(NOP);
 	delayMicroseconds(10);
@@ -81,7 +83,7 @@ void ads12xx::SetRegisterValue(uint8_t regAdress, uint8_t regValue) {
 
 	if (regValue != regValuePre) {
 		delayMicroseconds(10);
-		//waitforDRDY();
+		waitforDRDY();
 		SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE1)); // initialize SPI with 4Mhz clock, MSB first, SPI Mode0
 		digitalWrite(_CS, LOW);
 		delayMicroseconds(10);
@@ -102,7 +104,7 @@ void ads12xx::SetRegisterValue(uint8_t regAdress, uint8_t regValue) {
 }
 
 unsigned long ads12xx::GetRegisterValue(uint8_t regAdress) {
-	//waitforDRDY();
+	waitforDRDY();
 	SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE1)); // initialize SPI with 4Mhz clock, MSB first, SPI Mode0
 	uint8_t bufr;
 	digitalWrite(_CS, LOW);
@@ -114,6 +116,21 @@ unsigned long ads12xx::GetRegisterValue(uint8_t regAdress) {
 	delayMicroseconds(10);
 	digitalWrite(_CS, HIGH);
 	return bufr;
+	SPI.endTransaction();
+}
+
+/*
+Sends a Command to the ADC
+Like SELFCAL, GAIN, SYNC, WAKEUP
+*/
+void ads12xx::SendCMD(uint8_t cmd) {
+	waitforDRDY();
+	SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE1)); // initialize SPI with 4Mhz clock, MSB first, SPI Mode0
+	digitalWrite(_CS, LOW);
+	delayMicroseconds(10);
+	SPI.transfer(cmd); 
+	delayMicroseconds(10);
+	digitalWrite(_CS, HIGH);
 	SPI.endTransaction();
 }
 
@@ -167,7 +184,7 @@ void ads12xx::calibration(int cal_cmd) {
 		data[0] = OFC0;
 		cmd_name = "OFC: ";
 	}
-	if (cal_cmd == SELFOCAL) {
+	if (cal_cmd == SELFCAL) {
 		data[2] = OFC2;
 		data[1] = OFC1;
 		data[0] = OFC0;

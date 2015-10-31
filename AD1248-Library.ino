@@ -48,6 +48,7 @@ void setup()
 	Serial.println("'x' to SDATAC, 'd' for SDATA");
 	Serial.println("'o' to write Pre Predefinde Registers");
 	Serial.println("'f' to write a command");
+	Serial.println("'h' to select calibration methode");
 }
 
 void loop() {
@@ -55,55 +56,118 @@ void loop() {
 	if (Serial.available()) {
 		char cin = Serial.read();
 		char  check = 'y';
+		uint8_t cmd;
 		uint8_t cin1;
 		switch (cin) {
-			case 'r':
-				Serial.println("Which Register to read?");
-				while (!Serial.available());
-				Serial.print("Register Value for: ");
-				cin1 = Serial.parseInt();
-				Serial.println(cin1);
-				Serial.println(ADS.GetRegisterValue(cin1));
-				break;
-			case 'w':
-				Serial.println("Which Register to write?");
-				while (!Serial.available());
-				cin1 = Serial.parseInt();
-				Serial.println("Which Value to write?");
-				while (!Serial.available());
-				ADS.SetRegisterValue(cin1, Serial.parseInt());
-				break;
-			case 'c':
-				Serial.println("Conversion Result");
-				Serial.println(ADS.GetConversion());
-				break;
-			case 'x':
-				Serial.println("Stop SDATAC");
-				ADS.Reset(RESET_PIN);
-				break;
-			case 'o':
-				Serial.println("Writing predefinde Registers");
-				ADS.SetRegisterValue(MUX, P_AIN0 | N_AINCOM);
-				ADS.SetRegisterValue(DRATE, DR_1000);
-				break;
-			case 'd':
-				SPI.transfer(RDATAC);
-				while (check == 'y') {
-					if (Serial.available()){
+		case 'r':
+			Serial.println("Which Register to read?");
+			while (!Serial.available());
+			Serial.print("Register Value for: ");
+			cin1 = Serial.parseInt();
+			Serial.println(cin1);
+			Serial.println(ADS.GetRegisterValue(cin1));
+			break;
+		case 'w':
+			Serial.println("Which Register to write?");
+			while (!Serial.available());
+			cin1 = Serial.parseInt();
+			Serial.println("Which Value to write?");
+			while (!Serial.available());
+			ADS.SetRegisterValue(cin1, Serial.parseInt());
+			break;
+		case 'c':
+			Serial.println("Conversion Result");
+			Serial.println(ADS.GetConversion());
+			break;
+		case 'x':
+			Serial.println("Stop SDATAC");
+			ADS.Reset(RESET_PIN);
+			break;
+		case 'o':
+			Serial.println("Writing predefinde Registers");
+
+			ADS.SetRegisterValue(MUX, P_AIN0 | N_AINCOM);
+			ADS.SetRegisterValue(DRATE, DR_1000);
+			break;
+		case 'd':
+			while (check == 'y') {
+				if (Serial.available()) {
 					check = Serial.read();
+
 				}
 				uint32_t data = ADS.GetConversion();
-				Serial.println(data);
+				int timer1 = micros();
+				if (long minus = data >> 23 == 1) {
+					long data = data - 16777216;
 				}
-				break;
-			case 'f':
-				Serial.println("Which command to write");
-				while (!Serial.available());
-				SPI.transfer(Serial.read());
-				break;
+			Serial.println(data);
+			//	double voltage = (4.9986 / 8388608)*data;
+			//	Serial.println(voltage);
+
 				
+
+
+			}
+			break;
+		case 'f':
+			Serial.println("Which command to write");
+			while (!Serial.available());
+			cmd = Serial.parseInt();
+			Serial.print(cmd, HEX);
+			ADS.SendCMD(cmd);
+			break;
+		case 'h':
+			Serial.println("Which Calibration to run?");
+			Serial.println("'1' for SELFCAL\n'2' for SYSOGCAL\n'3' for SYSGCAL");
+			while (!Serial.available());
+			cmd = Serial.parseInt();
+			switch (cmd)
+			{
+			case 1:
+				Serial.println("Preforming Self Gain and Offset Callibration");
+				ADS.SendCMD(SELFCAL);
+				delay(5);
+				Serial.print("OFC0: ");
+				Serial.println(ADS.GetRegisterValue(OFC0));
+				Serial.print("OFC1: ");
+				Serial.println(ADS.GetRegisterValue(OFC1));
+				Serial.print("OFC2: ");
+				Serial.println(ADS.GetRegisterValue(OFC2));
+				Serial.print("FSC0: ");
+				Serial.println(ADS.GetRegisterValue(FSC0));
+				Serial.print("FSC1: ");
+				Serial.println(ADS.GetRegisterValue(FSC1));
+				Serial.print("FSC2: ");
+				Serial.println(ADS.GetRegisterValue(FSC2));
+				break;
+			case 2:
+				Serial.println("Preforming System Offset Callibration");
+				ADS.SendCMD(SYSOCAL);
+				delay(5);
+				Serial.print("OFC0: ");
+				Serial.println(ADS.GetRegisterValue(OFC0));
+				Serial.print("OFC1: ");
+				Serial.println(ADS.GetRegisterValue(OFC1));
+				Serial.print("OFC2: ");
+				Serial.println(ADS.GetRegisterValue(OFC2));
+				break;
+			case 3:
+				Serial.println("Preforming System Gain Callibration");
+				ADS.SendCMD(SYSGCAL);
+				delay(5);
+				Serial.print("FSC0: ");
+				Serial.println(ADS.GetRegisterValue(FSC0));
+				Serial.print("FSC1: ");
+				Serial.println(ADS.GetRegisterValue(FSC1));
+				Serial.print("FSC2: ");
+				Serial.println(ADS.GetRegisterValue(FSC2));
+				break;
 			default:
 				break;
+			}
+
+		default:
+			break;
 		}
 	}
 }
@@ -119,6 +183,14 @@ void loop() {
 
 	//ADS.Reset();
 	//Serial.println(ADS.GetRegisterValue(MUX), HEX);
+
+
+#ifdef ADS1256
+void test_voltage() {
+
+
+}
+#endif
 
 
 
