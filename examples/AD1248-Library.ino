@@ -6,6 +6,8 @@ const int  CS = 10;
 const int  DRDY = 8;
 const int RESET_PIN = 9;
 
+
+
 ads12xx ADS(CS, START, DRDY);  //initialize ADS as object of the ads12xx class
 
 
