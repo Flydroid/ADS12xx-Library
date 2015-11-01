@@ -7,7 +7,7 @@
 /*Serial Template */
 
 #ifdef ADS1248
-//#include "ads1248.h"
+#include "ads1248.h"
 #endif // ADS1248
 
 #ifdef ADS1256

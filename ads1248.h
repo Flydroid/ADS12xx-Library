@@ -55,6 +55,7 @@
 /* VBIAS - Bias Voltage Register (see p43 - bring together with bitwise OR | */
 /*  BIT7  -  BIT6  -  BIT5  -  BIT4  -  BIT3  -  BIT2  -  BIT1  -  BIT0  */
 /* VBIAS7 - VBIAS6 - VBIAS5 - VBIAS4 - VBIAS3 - VBIAS2 - VBIAS1 - VBIAS0 */
+
 /* VBIAS These bits apply a bias voltage of midsupply (AVDD + AVSS)/2 to the selected analog input */
 #define		VBIAS_RESET	0x00		 // Reset VBIAS Register 
 #define		VBIAS_7		B10000000    // AIN7
@@ -92,7 +93,7 @@ reference is required for operation the IDAC functions.*/
 #define		MUXCAL2_REF1		B00000100    // External REF1 measurement
 #define		MUXCAL2_REF0		B00000101    // External REF0 measurement
 #define		MUXCAL2_AVDD		B00000110    // AVDD measurement
-#define		MUXCAL2_AVSS		B00000111     // AVSS measurement
+#define		MUXCAL2_DVDD		B00000111     // DVDD measurement
 
 
 /* SYS0 - System Control Register 0 (see p45 - bring together with bitwise OR | */
@@ -123,6 +124,7 @@ reference is required for operation the IDAC functions.*/
 /* IDAC0- IDAC Control Register 0 (see p46 - bring together with bitwise OR | */
 /* BIT7 - BIT6 - BIT5 - BIT4 -   BIT3    - BIT2  - BIT1  - BIT0 */
 /* ID3  - ID2  - ID1  - ID0  - DRDY MODE - IMAG2 - IMAG1 - IMAG0 */
+#define IDAC0_ID	144 
 /* DRDY MODE This bits sets the DOUT/DRDY pin functionality  */
 #define		DRDY_ONLY     B00000000    // Data out only (default)
 #define		DRDY_BOTH     B00001000    // Data out and Data ready functionality
@@ -192,53 +194,10 @@ The IMAG bits control the magnitude of the excitation current. The IDACs require
 #define 	SELFOCAL	0x62	//Self Offset Calibration
 
 
-
-
-/*Function */
-#include "SPI.h"
-class ads1248{
-public:
-	ads1248(
-		const int CS,
-		const int START,
-		const int DRDY
-		);
+#define SPI_SPEED 4000000
+#define DRDY_PIN 8
 
 
 
-	void Reset(
-		);
 
-	unsigned long  GetRegisterValue(
-		uint8_t regAdress
-		);
-
-	void SetRegisterValue(
-		uint8_t regAdress,
-		uint8_t regValue
-		);
-
-	struct regValues_t
-	{
-		uint8_t MUX0_val;
-		uint8_t VBIAS_val;
-		uint8_t MUX1_val;
-		uint8_t SYS0_val;
-		uint8_t IDAC0_val;
-		uint8_t IDAC1_val;
-
-	} TE, PT100, Voltage;
-	unsigned long readSingle(
-		regValues_t regValues
-		);
-
-
-
-	unsigned long  GetConversion(
-		);
-private: 
-	int _CS;
-
-
-};
 #endif
