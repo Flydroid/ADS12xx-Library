@@ -5,7 +5,8 @@ volatile int DRDY_state = HIGH;
 // Waits untill DRDY Pin is falling (see Interrupt setup). 
 // Some commands like WREG, RREG need the DRDY to be low.
 void waitforDRDY() {
-	while (DRDY_state) continue;
+	while (DRDY_state) {}
+	//continue;
 }
 
 //Interrupt function
@@ -25,18 +26,21 @@ ads12xx::ads12xx(const int CS, const int START, const int DRDY) {
 #endif
 #ifdef ADS1258
 	pinMode(START, OUTPUT);		  // set START pin as Output
+	digitalWrite(START, LOW);        // HIGH = Start Convert Continuously
+	delayMicroseconds(1000000);
 	digitalWrite(START, HIGH);        // HIGH = Start Convert Continuously
+	delayMicroseconds(1000000);
 	_START = START;
 #endif
 	pinMode(DRDY, INPUT);             // DRDY read
 	_CS = CS;
 	_DRDY = DRDY;
-	delay(500);
+	delayMicroseconds(500000);
 	SPI.begin();
 
-	attachInterrupt(_DRDY, DRDY_Interuppt, FALLING); //Interrupt setup for DRDY detection
+	attachInterrupt(digitalPinToInterrupt(_DRDY), DRDY_Interuppt, FALLING); //Interrupt setup for DRDY detection
 
-	delay(500);
+	delayMicroseconds(500000);
 
 	// interal VREF einschalten
 }

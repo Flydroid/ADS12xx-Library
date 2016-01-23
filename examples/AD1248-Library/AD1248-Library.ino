@@ -1,9 +1,9 @@
 #include <SPI.h>
 #include "ads12xx.h"
 
-const int  START = 14;
+const int  START = 8;
 const int  CS = 10;
-const int  DRDY = 8;
+const int  DRDY = 2;
 const int RESET_PIN = 9;
 
 ads12xx ADS(CS, START, DRDY);  //initialize ADS as object of the ads12xx class
@@ -12,9 +12,9 @@ ads12xx ADS(CS, START, DRDY);  //initialize ADS as object of the ads12xx class
 void setup()
 {
 	Serial.begin(115200);
-	while (!Serial) {
+	while (!Serial) {}
 		Serial.println("Serial online");
-	}
+//	}
 
 	ADS.Reset(RESET_PIN);
 	delay(10);

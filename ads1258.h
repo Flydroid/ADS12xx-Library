@@ -77,13 +77,15 @@ of the BYPAS setting. The Offset reading uses the setting of BYPAS.*/
 /* Default = 000*/
 
 /* SBCS[1:0] These bits set the sensor bias current source. */
-#define SBCS_OFF B00001000 // Sensor Bias Current Source Off (default)
-#define SBCS_1 B00000100 // 1.5 uA source
-#define SBCS_3 B00001100 // 24 uA source
+#define SBCS_OFF B00000000 // Sensor Bias Current Source Off (default)
+#define SBCS_1 	 B00000100 // 1.5 uA source
+#define SBCS_3   B00001100 // 24 uA source
 
 /* DRATE[1:0] These bits set the data rate at the converter.*/
-#define DRATE_1 B00000010 // DRATE1
-#define DRATE_2 B00000001 // DRATE2
+#define DRATE_0 B00000000 // DRATE  1831 sps
+#define DRATE_1 B00000001 // DRATE  6168 sps
+#define DRATE_2 B00000010 // DRATE 15123 sps
+#define DRATE_3 B00000011 // DRATE 23739 sps
 
 /*Configuration Register MUXSCH Multiplexer Fixed Channel Register ( see p39)*/
 /* BIT7 - BIT6   -  BIT5  -  BIT4 - BIT3   - BIT2 - BIT1 - BIT0 */
