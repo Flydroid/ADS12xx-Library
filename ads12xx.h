@@ -3,6 +3,7 @@
 
 //#define ADS1248
 //#define ADS1256
+#define ADS1258
 
 /*Serial Template */
 
@@ -13,6 +14,10 @@
 #ifdef ADS1256
 #include "ads1256.h"
 #endif // ADS1256
+
+#ifdef ADS1258
+#include "ads1258.h"
+#endif // ADS1258
 
 #include "SPI.h"
 class ads12xx {
@@ -56,7 +61,17 @@ public:
 		uint8_t ADCON_val = ADCON_RESET;
 		uint8_t DRATE_val = DRATE_RESET;
 		uint8_t IO_val = IO_RESET;
-#endif // ADS1256
+#endif // ADS1256 
+#ifdef ADS1258
+		uint8_t CONFIG0_val;
+		uint8_t CONFIG1_val;
+		uint8_t MUXSCH_val;
+		uint8_t MUXDIF_val;
+		uint8_t SYSRED_val;
+		uint8_t GPIOC_val;
+		uint8_t GPIOD_val;
+		uint8_t ID_val;
+#endif // ADS1258 
 	};
 
 	long readSingle(

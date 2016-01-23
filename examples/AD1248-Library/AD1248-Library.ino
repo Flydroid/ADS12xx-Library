@@ -105,6 +105,7 @@ void loop() {
 			Serial.print(cmd, HEX);
 			ADS.SendCMD(cmd);
 			break;
+#if defined(ADS1248) ||defined(ADS1256) 
 		case 'c':
 			Serial.println("Which Calibration to run?");
 #ifdef ADS1256			
@@ -174,6 +175,7 @@ void loop() {
 			default:
 				break;
 			}
+#endif
 		case 'h':
 			Serial.println("Commands for testing:");
 			Serial.println("'r' to read Register");
@@ -194,19 +196,19 @@ void loop() {
 			switch (cmd)
 			{
 			case 1:
-				test_intTemp();
+//				test_intTemp();
 				break;
 			case 2:
-				test_supVoltage();
+//				test_supVoltage();
 				break;
 			case 3: 
-				test_extrefVoltage();
+//				test_extrefVoltage();
 				break;
 			case 4:
-				test_Voltage();
+//				test_Voltage();
 				break;
 			case 5:
-				test_Thermo();
+//				test_Thermo();
 				break;
 			}
 
@@ -317,7 +319,7 @@ void test_Thermo() {
 	ADS.SetRegisterValue(MUX0, MUX_SP2_AIN6 | MUX_SN2_AIN7);
 	ADS.SetRegisterValue(MUX1, REFSELT1_ON | VREFCON1_ON);	  //ADS Reference on Intern, Internal Reference on
 	ADS.SetRegisterValue(VBIAS, VBIAS_7);
-	ADS.SetRegisterValue(SYS0, PGA2_128);		   // 2000 sps vollkommen unütz rauschen überwiegt
+	ADS.SetRegisterValue(SYS0, PGA2_128);		   // 2000 sps vollkommen unï¿½tz rauschen ï¿½berwiegt
 
 	long volt_val = ADS.GetConversion();
 	if (long minus = volt_val >> 23 == 1) {

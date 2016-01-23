@@ -23,6 +23,11 @@ ads12xx::ads12xx(const int CS, const int START, const int DRDY) {
 	digitalWrite(START, HIGH);        // HIGH = Start Convert Continuously
 	_START = START;
 #endif
+#ifdef ADS1258
+	pinMode(START, OUTPUT);		  // set START pin as Output
+	digitalWrite(START, HIGH);        // HIGH = Start Convert Continuously
+	_START = START;
+#endif
 	pinMode(DRDY, INPUT);             // DRDY read
 	_CS = CS;
 	_DRDY = DRDY;
@@ -43,9 +48,9 @@ long ads12xx::GetConversion() {
 	waitforDRDY(); // Wait until DRDY is LOW
 	SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE1)); 
 	digitalWrite(_CS, LOW); //Pull SS Low to Enable Communications with ADS1247
-	delayMicroseconds(10); // RD: Wait 25ns for ADC12xx to get ready
+//	delayMicroseconds(10); // RD: Wait 25ns for ADC12xx to get ready
 	SPI.transfer(RDATA); //Issue RDATA
-	delayMicroseconds(10);
+//	delayMicroseconds(10);
 	regData |= SPI.transfer(NOP);
 	//delayMicroseconds(10);
 	regData <<= 8;
@@ -53,7 +58,7 @@ long ads12xx::GetConversion() {
 	//delayMicroseconds(10);
 	regData <<= 8;
 	regData |= SPI.transfer(NOP);
-	delayMicroseconds(10);
+//	delayMicroseconds(10);
 	digitalWrite(_CS, HIGH);
 	SPI.endTransaction();
 	noInterrupts();
