@@ -14,7 +14,6 @@ void setup()
 	Serial.begin(115200);
 	while (!Serial) {}
 		Serial.println("Serial online");
-//	}
 
 	ADS.Reset(RESET_PIN);
 	delay(10);
@@ -24,11 +23,12 @@ void setup()
 	Serial.println("'w' to write Register");
 	Serial.println("'R' to get a Conversion Result");
 	Serial.println("'x' to SDATAC, 'd' for SDATA");
-	Serial.println("'o' to write Pre Predefinde Registers");
+	Serial.println("'o' to write Pre Predefined Registers");
 	Serial.println("'f' to write a command");
-	Serial.println("'c' to select calibration methode");
-	Serial.println("'t' to chose test");
-	Serial.println("'h' for this help");
+	Serial.println("'c' to select calibration method");
+	Serial.println("'t' to choose test");
+  Serial.println("'h' for this help");
+  Serial.println("'K' for continuous conversion");
 }
 
 void loop() {
@@ -39,6 +39,12 @@ void loop() {
 		uint8_t cmd;
 		uint8_t cin1;
 		switch (cin) {
+    case 'K':
+      Serial.println("Conversion Result");
+      while(1){
+        Serial.println(ADS.GetConversion());
+      }
+      break;
 		case 'r':
 			Serial.println("Which Register to read?");
 			while (!Serial.available());
@@ -190,8 +196,8 @@ void loop() {
 			break;
 		case 't':
 			Serial.println("Chose which test to run");
-			Serial.println("'1' for Internal Temperature\n'2' for Supply Voltage Measurement\n'3' for External Voltage Reference\n'4' for Voltage Measurement\n'5' for Thermocouple Measurement");
-			while (!Serial.available());
+			Serial.println("'1' for Internal Temperature\n'2' for Supply Voltage Measurement\n'3' for External Voltage Reference\n'4' for Voltage Measurement\n'5' for Thermocouple Measurement\n'6' for AIN0");
+			while(!Serial.available()){}     
 			cmd = Serial.parseInt();
 			switch (cmd)
 			{
@@ -207,12 +213,13 @@ void loop() {
 			case 4:
 //				test_Voltage();
 				break;
-			case 5:
-//				test_Thermo();
-				break;
+      case 5:
+//        test_Thermo();
+        break;
+      case 6:
+        test_AIN0();
+        break;
 			}
-
-
 		default:
 			break;
 		}
@@ -224,7 +231,6 @@ void loop() {
 
 
 
-#ifdef ADS1248
 
 /*
 Theses are test functions for the ADS1248 system monitor as well
@@ -233,6 +239,30 @@ as some examples for 4-wire and thermocouple measurment (Warning these are not w
 Run them atleast 3 times to get proper values.
 
 --------------------------------------------------------------
+
+/*
+This function measures the voltage of the external voltage reference 1
+*/
+#ifdef ADS1258
+void test_AIN0() {
+  ADS.SetRegisterValue(CONFIG0, MUXMOD_FIXED|CLKENB_ENABLE);
+  ADS.SetRegisterValue(CONFIG1, IDLMOD_SLEEP|DLY2_on|DLY1_on|DLY0_on|DRATE_0);
+  ADS.SetRegisterValue(MUXSCH, AINP0|AINN0 );
+  //Data sheet ADS1258 P25 : 1 LSB=V_REF/780000h
+//0x780000=7864320 dec
+  //unsigned 
+  long volt_val = ADS.GetConversion();
+  Serial.println(volt_val, DEC);
+  Serial.println(volt_val, HEX);
+  double voltage = (5.0 *volt_val/ (7864320));
+//  voltage *= 4 * 2.048;
+  Serial.print("AIN0 voltage: ");
+  Serial.print(voltage, DEC);
+  Serial.println(" V");
+}
+#endif
+
+#ifdef ADS1248
 
 This function gets temperature from the internal diode
 */

@@ -199,8 +199,8 @@ Logic low 0=GPIO is default */
 /* MUL allows for accessing multiple registers */
 
 #define MUL		0x10	//Multiple register write enabled
-#define RDATA	0x00	//Channel Data read direct (no command) (CDRD in 1258 data sheet)
-#define CDRC	0x20	//Channel data read command (register format, set MUL=1, status byte included in data)
+#define CDRD	0x00	//Channel Data read direct (no command) (CDRD in 1258 data sheet)
+#define RDATA	0x20	//Channel data read command (register format, set MUL=1, status byte included in data) data sheet CDRC
 #define RREG	0x40	//Register read command A[3:0]= 0000
 #define WREG	0x60	//Register write command
 #define PULCON	0x80	//Pulse convert command, MUL, A[3:0]: don't care
