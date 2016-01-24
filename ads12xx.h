@@ -1,7 +1,7 @@
 #ifndef ads12xx_H
 #define ads12xx_H
 
-//#define ADS1248
+#define ADS1248
 //#define ADS1256
 
 /*Serial Template */
@@ -17,14 +17,15 @@
 #include "SPI.h"
 class ads12xx {
 public:
-	ads12xx(
-		const int CS,
-		const int START,
-		const int DRDY
+	ads12xx();
+	void begin(
+		int CS,
+		int START,
+		int DRDY
 		);
 
 	void Reset(
-		const int RESET_PIN
+		
 		);
 
 	unsigned long  GetRegisterValue(
@@ -59,20 +60,10 @@ public:
 #endif // ADS1256
 	};
 
-	long readSingle(
-		regValues_t regValues
-		);
 
 	long  GetConversion(
 		);
-	void calibration(
-		int cal_cmd
-		);
-	void SetRegister(
-		regValues_t regValues
-		);
-
-private:
+	private:
 	int _CS;
 	int _DRDY;
 	int _START;

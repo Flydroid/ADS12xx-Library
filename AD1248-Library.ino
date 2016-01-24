@@ -1,24 +1,27 @@
 #include <SPI.h>
 #include "ads12xx.h"
 
-const int  START = 14;
-const int  CS = 10;
-const int  DRDY = 8;
-const int RESET_PIN = 9;
+int  START = 26;
+int  CS = 21;
+int  DRDY = 24;
 
+//Define which ADC to use in the ads12xx.h file
 
-
-ads12xx ADS(CS, START, DRDY);  //initialize ADS as object of the ads12xx class
-
+ads12xx ADS;
 
 void setup()
 {
 	Serial.begin(115200);
 	while (!Serial) {
-		Serial.println("Serial online");
+		
 	}
+	Serial.println("Serial online");
+	pinMode(20, OUTPUT);
+	digitalWrite(20, HIGH); //Force other Chip into CS high
+	ADS.begin(CS, START, DRDY);  //initialize ADS as object of the ads12xx class
 
-	ADS.Reset(RESET_PIN);
+	ADS.Reset();
+	
 	delay(10);
 
 	Serial.println("Commands for testing:");
@@ -32,6 +35,7 @@ void setup()
 	Serial.println("'t' to chose test");
 	Serial.println("'h' for this help");
 }
+
 
 void loop() {
 
@@ -63,10 +67,10 @@ void loop() {
 			break;
 		case 'x':
 			Serial.println("Stop SDATAC");
-			ADS.Reset(RESET_PIN);
+			ADS.Reset();
 			break;
 		case 'o':
-			Serial.println("Writing predefinde Registers");
+			Serial.println("Writing predefind Registers");
 #ifdef ADS1256
 			ADS.SetRegisterValue(MUX, P_AIN0 | N_AINCOM);
 			ADS.SetRegisterValue(DRATE, DR_1000);
@@ -77,9 +81,10 @@ void loop() {
 			ADS.SetRegisterValue(IDAC0, DRDY_ONLY | IMAG2_OFF
 				//	| IDAC0_ID
 				);
-			ADS.SetRegisterValue(IDAC1,	I1DIR_OFF);
+			ADS.SetRegisterValue(IDAC1, I1DIR_OFF);
 			ADS.SetRegisterValue(MUX1, BCS1_1 | MUX_SP2_AIN0 | MUX_SN2_AIN2);
 #endif
+			Serial.println("Writing sucessfull");
 			break;
 		case 'd':
 			while (check == 'y') {
@@ -176,6 +181,7 @@ void loop() {
 			default:
 				break;
 			}
+			break;
 		case 'h':
 			Serial.println("Commands for testing:");
 			Serial.println("'r' to read Register");
@@ -188,6 +194,7 @@ void loop() {
 			Serial.println("'t' to chose test");
 			Serial.println("'h' for this help");
 			break;
+#ifdef ADS1248
 		case 't':
 			Serial.println("Chose which test to run");
 			Serial.println("'1' for Internal Temperature\n'2' for Supply Voltage Measurement\n'3' for External Voltage Reference\n'4' for Voltage Measurement\n'5' for Thermocouple Measurement");
@@ -201,7 +208,7 @@ void loop() {
 			case 2:
 				test_supVoltage();
 				break;
-			case 3: 
+			case 3:
 				test_extrefVoltage();
 				break;
 			case 4:
@@ -212,17 +219,13 @@ void loop() {
 				break;
 			}
 
+#endif
 
 		default:
 			break;
 		}
 	}
-
-
-	
 }
-
-
 
 #ifdef ADS1248
 
@@ -273,22 +276,26 @@ void test_supVoltage() {
 	Serial.print(voltage1);
 	Serial.println("V");
 }
+
 /*
 This function measures the voltage of the external voltage reference 1
+You have to connect the AIN0 to the specific REF0 or REF1 output
 */
 void test_extrefVoltage() {
-	ADS.SetRegisterValue(MUX1, REFSELT1_ON | VREFCON1_ON | MUXCAL2_REF1);	  //ADS Reference on Intern, Internal Reference on, System Montitor on REF1
+	ADS.SetRegisterValue(MUX1, REFSELT1_ON | VREFCON1_ON | MUXCAL2_REF0);	  //ADS Reference on Intern, Internal Reference on, System Montitor on REF1
 	ADS.SetRegisterValue(IDAC0, IMAG2_1500);			 //	IDAC at 1,5mA current
 	ADS.SetRegisterValue(IDAC1, I1DIR_AIN0 | I2DIR_OFF);			 // IDAC1 Currentoutput on AIN0, IDAC2 off
 	ADS.SetRegisterValue(SYS0, DOR3_5);
 
 	unsigned long volt_val = ADS.GetConversion();
-	Serial.println(volt_val, DEC);
+	//Serial.println(volt_val, DEC);
 	double voltage = (2.048 / (16777216))*volt_val;
 	voltage *= 4 * 2.048;
 	Serial.print("External V_Ref: ");
 	Serial.print(voltage, DEC);
 	Serial.println("V");
+
+
 }
 
 /*
@@ -316,9 +323,9 @@ void test_Voltage() {
 Untested function for Thermocouple measurment
 */
 void test_Thermo() {
-	ADS.SetRegisterValue(MUX0, MUX_SP2_AIN6 | MUX_SN2_AIN7);
+	ADS.SetRegisterValue(MUX0, MUX_SP2_AIN0 | MUX_SN2_AIN1);
 	ADS.SetRegisterValue(MUX1, REFSELT1_ON | VREFCON1_ON);	  //ADS Reference on Intern, Internal Reference on
-	ADS.SetRegisterValue(VBIAS, VBIAS_7);
+	ADS.SetRegisterValue(VBIAS, VBIAS_0);
 	ADS.SetRegisterValue(SYS0, PGA2_128);		   // 2000 sps vollkommen unütz rauschen überwiegt
 
 	long volt_val = ADS.GetConversion();
@@ -334,7 +341,7 @@ void test_Thermo() {
 	//Serial.println(minus, BIN);
 
 	double voltage = (2.048 / (16777216 * 2))*(volt_val / 32);
-	//Serial.print("Thermocouple: ");
-	//Serial.println(voltage, DEC);
+	Serial.print("Thermocouple: ");
+	Serial.println(voltage, DEC);
 }
 #endif
