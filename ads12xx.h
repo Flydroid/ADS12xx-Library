@@ -80,6 +80,9 @@ public:
 
 	long  GetConversion(
 		);
+		void GetConversion1258(
+		uint8_t *statusByte, int32_t *regData
+		);
 	void calibration(
 		int cal_cmd
 		);

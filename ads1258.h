@@ -90,14 +90,38 @@ of the BYPAS setting. The Offset reading uses the setting of BYPAS.*/
 /*Configuration Register MUXSCH Multiplexer Fixed Channel Register ( see p39)*/
 /* BIT7 - BIT6   -  BIT5  -  BIT4 - BIT3   - BIT2 - BIT1 - BIT0 */
 /* AINP3 	- AINP2 - AINP1 - AINP0 - AINN3 - AINN2 - AINN1 - AINN0 */
-#define AINP3 B10000000 // Select AINP3
-#define AINP2 B01000000 // Select AINP2
-#define AINP1 B00100000 // Select AINP1
-#define AINP0 B00010000 // Select AINP0
-#define AINN3 B00001000 // Select AINN3
-#define AINN2 B00000100 // Select AINN2
-#define AINN1 B00000010 // Select AINN1
-#define AINN0 B00000001 // Select AINN0
+#define AINN0	B00000000 // Select AINN0
+#define AINN1	B00000001 // Select AINN1
+#define AINN2	B00000010 // Select AINN2
+#define AINN3	B00000011 // Select AINN3
+#define AINN4	B00000100 // Select AINN4
+#define AINN5	B00000101 // Select AINN5
+#define AINN6	B00000110 // Select AINN6
+#define AINN7	B00000111 // Select AINN7
+#define AINN8	B00001000 // Select AINN8
+#define AINN9	B00001001 // Select AINN9
+#define AINN10	B00001010 // Select AINN10
+#define AINN11	B00001011 // Select AINN11
+#define AINN12	B00001100 // Select AINN12
+#define AINN13	B00001101 // Select AINN13
+#define AINN14	B00001110 // Select AINN14
+#define AINN15	B00001111 // Select AINN15
+#define AINP0	B00000000 // Select AINP0
+#define AINP1	B00010000 // Select AINP1
+#define AINP2	B00100000 // Select AINP2
+#define AINP3	B00110000 // Select AINP3
+#define AINP4	B01000000 // Select AINP0
+#define AINP5	B01010000 // Select AINP1
+#define AINP6	B01100000 // Select AINP2
+#define AINP7	B01110000 // Select AINP3
+#define AINP8	B10000000 // Select AINP0
+#define AINP9	B10010000 // Select AINP1
+#define AINP10	B10100000 // Select AINP2
+#define AINP11	B10110000 // Select AINP3
+#define AINP12	B11000000 // Select AINP0
+#define AINP13	B11010000 // Select AINP1
+#define AINP14	B11100000 // Select AINP2
+#define AINP15	B11110000 // Select AINP3
 
 /*Configuration Register MUXDIF Multiplexer Differential Input Select Register (Address = 03h) ( see p39)
 This register selects input channels of multiplexer to be used for Fixed channel mode*/
@@ -200,7 +224,7 @@ Logic low 0=GPIO is default */
 
 #define MUL		0x10	//Multiple register write enabled
 #define CDRD	0x00	//Channel Data read direct (no command) (CDRD in 1258 data sheet)
-#define RDATA	0x20	//Channel data read command (register format, set MUL=1, status byte included in data) data sheet CDRC
+#define RDATA	0x30	//Channel data read command (register format, set MUL=1, status byte included in data) data sheet CDRC
 #define RREG	0x40	//Register read command A[3:0]= 0000
 #define WREG	0x60	//Register write command
 #define PULCON	0x80	//Pulse convert command, MUL, A[3:0]: don't care
