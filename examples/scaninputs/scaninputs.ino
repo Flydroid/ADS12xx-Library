@@ -1,37 +1,12 @@
 #include <SPI.h>
 #include "ads12xx.h"
 
-/*  struct conversion{
-    uint8_t statusByte;
-    int32_t regData;
-  };*/
-
 const int  START = 8;
 const int  CS = 10;
 const int  DRDY = 2;
 const int RESET_PIN = 9;
-/*
-  uint8_t singleEndedChannels[16]={
-  B00000001
-  B00000010
-  B00000011
-  B00000100
-  B00000101
-  B00000110
-  B00000111
-  B00001000
-  B00001001
-  B00001010
-  B00001011
-  B00001100
-  B00001101
-  B00001110
-  B00001111
-  B00000001
-  };
-*/
-ads12xx ADS(CS, START, DRDY);  //initialize ADS as object of the ads12xx class
 
+ads12xx ADS(CS, START, DRDY);  //initialize ADS as object of the ads12xx class
 
 void setup()
 {
@@ -220,7 +195,7 @@ void loop() {
         break;
       case 't':
         Serial.println("Chose which test to run");
-        Serial.println("'1' for Internal Temperature\n'2' for Supply Voltage Measurement\n'3' for External Voltage Reference\n'4' for Voltage Measurement\n'5' for Thermocouple Measurement\n'6' for AIN0\n'7' for 32 samples Pulse read");
+        Serial.println("'1' for Internal Temperature\n'2' for Supply Voltage Measurement\n'3' for External Voltage Reference\n'4' for Voltage Measurement\n'5' for Thermocouple Measurement\n'6' for AIN0\n'7' for 255 differential samples over all channels");
         while (!Serial.available()) {}
         cmd = Serial.parseInt();
         switch (cmd)
@@ -281,8 +256,6 @@ void test_AIN0() {
   ADS.SetRegisterValue(MUXSCH, AINP1);
   //Data sheet ADS1258 P25 : 1 LSB=V_REF/780000h
   //0x780000=7864320 dec
-  //unsigned
-  //long volt_val =
   ADS.GetConversion1258(&statusByte, &regData);
   volt_val = regData;
   Serial.print("Status byte = ");
@@ -290,40 +263,39 @@ void test_AIN0() {
   Serial.println(volt_val, DEC);
   Serial.println(volt_val, HEX);
   double voltage = (5.0 * volt_val / (7864320));
-  //  voltage *= 4 * 2.048;
   Serial.print("AIN0 voltage: ");
   Serial.print(voltage, DEC);
   Serial.println(" V");
 }
 
 void test_PulseRead() {
-  uint8_t statuses[16] = {};
-  int32_t results[16]  = {};
+  uint8_t statuses[8] = {};
+  int32_t results[8]  = {};
   uint8_t statusByte;
+  uint8_t channel;
+  uint8_t valid;
   int32_t regData;
-  ADS.SetRegisterValue(CONFIG0, MUXMOD_AUTO | CLKENB_ENABLE | STAT_ENABLE);//CHOP_ON
+  ADS.SetRegisterValue(CONFIG0, MUXMOD_AUTO | CLKENB_ENABLE | STAT_ENABLE | CHOP_ENABLE | BYPAS_EXT); //CHOP_ON, external bypass on (for putting an external amplifier)
   ADS.SetRegisterValue(CONFIG1, IDLMOD_SLEEP | DLY2_on | DLY1_on | DLY0_on | DRATE_0);
   ADS.SetRegisterValue(MUXDIF, 0xFF);
   ADS.SetRegisterValue(MUXSG0, 0x00);
   ADS.SetRegisterValue(MUXSG1, 0x00);
   //Data sheet ADS1258 P25 : 1 LSB=V_REF/780000h
   //0x780000=7864320 dec
-  //unsigned
-  for (uint8_t j = 0; j < 16 ; j++) {
-    for (uint8_t i = 0; i < 16 ; i++) {
-      ADS.GetConversion1258(&statusByte, &regData);
-      statuses[i] = statusByte;
-      results[i] = regData;
-    }
-    for (uint8_t i = 0; i < 16 ; i++) {
-      statusByte = (statuses[i] << 5);
-      statusByte = (statusByte >> 5);
-      Serial.print(statusByte, DEC);
-      Serial.print(" ");
-      //Serial.println(statuses[i], BIN);
-      double voltage = (5.0 * results[i] / (7864320));
-      Serial.println(voltage, DEC);
-    }
+  for (uint8_t j = 0; j < 255 ; j++) {
+    ADS.GetConversion1258(&statusByte, &regData);
+    valid = (statusByte >> 7);  //leftmost bit of 
+    channel = (statusByte << 5);
+    channel = (channel >> 5);
+    Serial.print(j, DEC);
+    Serial.print(" ");
+    Serial.print(channel, DEC);
+    Serial.print(" ");
+    Serial.print(valid, DEC);
+    Serial.print(" ");
+    //Serial.println(statuses[i], BIN);
+    double voltage = (5.0 * regData / (7864320));
+    Serial.println(voltage, DEC);
   }
 }
 #endif
@@ -331,7 +303,7 @@ void test_PulseRead() {
 #ifdef ADS1248
 
 This function gets temperature from the internal diode
-* /
+/
 void test_intTemp() {
   ADS.SetRegisterValue(MUX1, MUXCAL2_TEMP | VREFCON1_ON | REFSELT1_ON);
 

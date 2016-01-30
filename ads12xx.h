@@ -20,6 +20,9 @@
 #endif // ADS1258
 
 #include "SPI.h"
+void _DRDY_Interuppt();
+void waitforDRDY();
+
 class ads12xx {
 public:
 	ads12xx(

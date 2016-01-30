@@ -1,20 +1,17 @@
 #include "ads12xx.h"
 
-volatile bool DRDY_state = HIGH;
+volatile int DRDY_state;
 
 // Waits until DRDY Pin is falling (see Interrupt setup). 
 // Some commands like WREG, RREG need the DRDY to be low.
 void waitforDRDY() {
-//	Serial.println(DRDY_state);
-	while(DRDY_state) {
-		
+	while(DRDY_state) {		
 	}
 	//continue;
-//	Serial.println(DRDY_state);
 }
 
 //Interrupt function
-void DRDY_Interuppt() {
+void _DRDY_Interuppt() {
 	DRDY_state = 0;
 }
 
@@ -45,17 +42,16 @@ ads12xx::ads12xx(const int CS, const int START, const int DRDY) {
 	_CS = CS;
 	_DRDY = DRDY;
 	delayMicroseconds(500000);
-	SPI.begin();
 
-//	attachInterrupt(digitalPinToInterrupt(_DRDY), DRDY_Interuppt, FALLING); //Interrupt setup for DRDY detection
-	attachInterrupt(0, DRDY_Interuppt, FALLING); //Interrupt setup for DRDY detection
+	SPI.begin();
+	attachInterrupt(0, _DRDY_Interuppt, FALLING); //Interrupt setup for DRDY detection
 	delayMicroseconds(500000);
 	// interal VREF einschalten
 }
 
 
-// function to get a 3byte conversion result from the adc
-    long ads12xx::GetConversion() {
+// function to get a 3byte conversion result from the ADS1248 or ADS1256 adc
+long ads12xx::GetConversion() {
 	long regData;
 	uint8_t byte0;
 	uint8_t byte1;
@@ -81,34 +77,16 @@ ads12xx::ads12xx(const int CS, const int START, const int DRDY) {
 	return regData;
 }
 
-// function to get a 3byte conversion result and the status byte from the ADS1258
+// function to get a 3byte conversion result and the status byte from the ADS1258 ADC
 	void ads12xx::GetConversion1258(uint8_t *statusByte, int32_t *regData) {
-//	int32_t regData;
 	uint8_t byte0;
 	uint8_t byte1;
 	uint8_t byte2;
     waitforDRDY(); // Wait until DRDY is LOW
-//	while (DRDY_state) {}
-//	while(digitalRead(_DRDY)) {};
-	//Serial.println(DRDY_state);
 	SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, spimodeX)); 
     digitalWrite(_CS, LOW); //Pull SS Low to Enable Communications with ADS1247
-//	delayMicroseconds(10); // RD: Wait 25ns for ADC12xx to get ready
 	SPI.transfer(RDATA); //Issue RDATA
-//	SPI.transfer(CDRD); //Issue RDATA
-//	SPI.transfer(PULCON); //Issue RDATA
-/*
 
-	//	delayMicroseconds(10);
-	regData |= SPI.transfer(NOP);
-	//delayMicroseconds(10);
-	regData <<= 8;
-	regData |= SPI.transfer(NOP);
-	//delayMicroseconds(10);
-	regData <<= 8;
-	regData |= SPI.transfer(NOP);
-//	delayMicroseconds(10);
-    singleConv->*/
  	*statusByte=SPI.transfer(NOP);
 	byte0=SPI.transfer(NOP); 
 	byte1=SPI.transfer(NOP);
@@ -118,12 +96,10 @@ ads12xx::ads12xx(const int CS, const int START, const int DRDY) {
 
 	digitalWrite(_CS, HIGH);
 	SPI.endTransaction();
-//	noInterrupts();
-	delayMicroseconds(10);
+	noInterrupts();
+//	delayMicroseconds(10);
 	DRDY_state = HIGH;
-//	interrupts();
-
-	//return regData;
+	interrupts();
 }
 
 
@@ -173,14 +149,11 @@ unsigned long ads12xx::GetRegisterValue(uint8_t regAdress) {
 	SPI.beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, spimodeX)); // initialize SPI with 4Mhz clock, MSB first, SPI Mode0
 	uint8_t bufr;
 	digitalWrite(_CS, LOW);
-//	delayMicroseconds(10);
 	SPI.transfer(RREG | regAdress); // send 1st command byte, address of the register
-//#ifndef ADS1258
+#ifndef ADS1258
 //	SPI.transfer(0x00);			// send 2nd command byte, read only one register
-//#endif
-//	delayMicroseconds(10);
+#endif
 	bufr = SPI.transfer(NOP);	// read data of the register
-//	delayMicroseconds(10);
 	digitalWrite(_CS, HIGH);
 	return bufr;
 	SPI.endTransaction();
