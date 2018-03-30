@@ -1,0 +1,16 @@
+{
+  "name": "ADS12-xx-Library",
+  "keywords": "ADC, ADS1248, ADS1245, ADS",
+  "description": "Library for the TI ADS1248 and ADS1256 24bit ADC",
+  "homepage": "https://github.com/Flydroid/ADS12xx-Library",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Flydroid/ADS12xx-Library.git"
+  },
+  "authors": {
+    "name": "flydroid",
+    "email": "jograesser@gmail.com"
+  },
+  "frameworks": "arduino",
+  "platforms": "*"
+}
