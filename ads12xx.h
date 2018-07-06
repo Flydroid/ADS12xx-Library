@@ -21,7 +21,8 @@ public:
 	void begin(
 		int CS,
 		int START,
-		int DRDY
+		int DRDY,
+		int _RESET
 		);
 
 	void Reset(

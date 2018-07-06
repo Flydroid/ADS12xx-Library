@@ -29,9 +29,9 @@
 #define MUX0_RESET 0x01      // Reset MUX0 Register 
 /* BCS1:0 These bits select the magnitude of the sensor detect current source */
 #define		BCS1_1		B00000000    // 00 Burnout current source off (default)
-#define		BCS1_2      B01000000    // 01 Burnout current source on 0.5 µA
-#define		BCS1_3      B10000000    // 10 Burnout current source on 2 µA
-#define		BCS1_4      B11000000    // 11 Burnout current source on 10 µA
+#define		BCS1_2      B01000000    // 01 Burnout current source on 0.5 ï¿½A
+#define		BCS1_3      B10000000    // 10 Burnout current source on 2 ï¿½A
+#define		BCS1_4      B11000000    // 11 Burnout current source on 10 ï¿½A
 /* MUX_SP2:0 Positive input channel selection bits */
 #define		MUX_SP2_AIN0		B00000000    // 000 AIN0 (default)
 #define		MUX_SP2_AIN1		B00001000    // 001 AIN1
@@ -131,13 +131,13 @@ reference is required for operation the IDAC functions.*/
 /* IMAG2:0 The ADS1248 have two programmable current source DACs that can be used for sensor excitation.
 The IMAG bits control the magnitude of the excitation current. The IDACs require the internal reference to be on.  */
 #define		IMAG2_OFF     B00000000    // off (default)
-#define		IMAG2_50      B00000001    // 50µA
-#define		IMAG2_100     B00000010    // 100µA
-#define		IMAG2_250     B00000011    // 250µA
-#define		IMAG2_500     B00000100    // 500µA
-#define		IMAG2_750     B00000101    // 750µA
-#define		IMAG2_1000    B00000110    // 1000µA
-#define		IMAG2_1500    B00000111    // 1500µA
+#define		IMAG2_50      B00000001    // 50uA
+#define		IMAG2_100     B00000010    // 100uA
+#define		IMAG2_250     B00000011    // 250uA
+#define		IMAG2_500     B00000100    // 500uA
+#define		IMAG2_750     B00000101    // 750uA
+#define		IMAG2_1000    B00000110    // 1000uA
+#define		IMAG2_1500    B00000111    // 1500uA
 
 
 /* IDAC1- IDAC Control Register 1 (see p47 - bring together with bitwise OR | */
