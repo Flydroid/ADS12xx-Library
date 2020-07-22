@@ -41,7 +41,7 @@ void ads12xx::begin(int CS, int START, int DRDY, int _RESET) {
 	delay(500);
 	SPI.begin();
 
-	attachInterrupt(_DRDY, DRDY_Interuppt, FALLING); //Interrupt setup for DRDY detection
+	attachInterrupt(digitalPinToInterrupt(_DRDY), DRDY_Interuppt, FALLING); //Interrupt setup for DRDY detection
 
 	delay(500);
 	
